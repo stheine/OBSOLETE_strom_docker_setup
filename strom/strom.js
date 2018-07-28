@@ -3,6 +3,7 @@
 const _              = require('lodash');
 const check          = require('check-types');
 const fsExtra        = require('fs-extra');
+const moment         = require('moment');
 const {promisify}    = require('es6-promisify');
 const rrdtool        = require('rrdtools');
 const smartmeterObis = require('smartmeter-obis');
@@ -26,7 +27,7 @@ const options = {
 const handleData = async function(err, obisResult) {
   try {
     if(err) {
-      console.err('handleData(): Error received', err);
+      console.error('handleData(): Error received', err);
       // handle error
       // if you want to cancel the processing because of this error,
       // call smTransport.stop() before returning, else processing continues
@@ -55,6 +56,8 @@ const handleData = async function(err, obisResult) {
           rrdValue = obisResult[obisId].getValue(0).value;
 
           await fsExtra.writeJson('/var/strom/strom.json', {[rrdName]: rrdValue});
+
+          console.log(`${moment().format('YYYY-MM-DD HH:mm:ss')} ${rrdValue}W`);
           break;
 
         case '1-0:0.0.9*255':         // Device ID
@@ -102,7 +105,7 @@ const handleData = async function(err, obisResult) {
       throw err;
     }
   } catch(ex) {
-    console.err('handleData(): Exception', ex);
+    console.error('handleData(): Exception', ex);
 
     smTransport.stop();
   }
