@@ -99,6 +99,8 @@ const handleData = async function(err, obisResult) {
     const rrdTmpl   = _.keys(rrdUpdates).join(':');
     const rrdUpdate = rrdValues.join(':');
 
+    console.log(`${moment().format('YYYY-MM-DD HH:mm:ss')}`, {rrdTmpl, rrdUpdate});
+
     try {
       await rrdtoolUpdate(rrdFile, rrdTmpl, [rrdUpdate]);
     } catch(err) {
