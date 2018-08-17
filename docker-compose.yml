@@ -54,27 +54,6 @@ volumes:
       o: addr=192.168.6.22,nolock,rw
       device: :/nfs/Data/linux/readymedia/log
 
-#  serviio_library:
-#    driver: local
-#    driver_opts:
-#      type: nfs
-#      o: addr=192.168.6.22,nolock,rw
-#      device: :/nfs/Data/linux/serviio/library
-#
-#  serviio_log:
-#    driver: local
-#    driver_opts:
-#      type: nfs
-#      o: addr=192.168.6.22,nolock,rw
-#      device: :/nfs/Data/linux/serviio/log
-#
-#  serviio_transcode:
-#    driver: local
-#    driver_opts:
-#      type: nfs
-#      o: addr=192.168.6.22,nolock,rw
-#      device: :/nfs/Data/linux/serviio/transcode
-
   strom:
     driver: local
     driver_opts:
@@ -118,7 +97,7 @@ services:
       context: readymedia
       args:
         - CACHE_DATE=2018-07-16
-    # Note: 'network_mode: host' is required for twonky to receive multicast traffic
+    # Note: 'network_mode: host' is required for readymedia to receive multicast traffic
     #       to detect the upnp server.
     network_mode: host
     ports:
@@ -130,29 +109,6 @@ services:
       - nas_fritzbox:/nas_fritzbox:nocopy
       - readymedia_cache:/var/cache/minidlna
       - readymedia_log:/var/log/minidlna
-
-#  serviio:
-#    restart: unless-stopped
-#    build:
-#      context: serviio
-#      args:
-#        - CACHE_DATE=2018-07-16
-#    cpu_count: 1
-##          memory: 50M
-#    # Note: 'network_mode: host' is required for twonky to receive multicast traffic
-#    #       to detect the upnp server.
-## try without    network_mode: host
-#    ports:
-#      - 1900:1900/udp
-#      - 8895:8895/tcp
-#      - 23423:23423/tcp
-## mediabrowser      - 23424:23424/tcp
-#    volumes:
-#      - musik:/musik:nocopy
-#      - nas_fritzbox:/nas_fritzbox:nocopy
-#      - serviio_log:/serviio/log:nocopy
-#      - serviio_library:/serviio/library:nocopy
-#      - serviio_transcode:/serviio/transcode:nocopy
 
   strom:
     restart: unless-stopped
