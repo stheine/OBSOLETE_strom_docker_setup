@@ -1,4 +1,4 @@
-FROM diginc/pi-hole-multiarch:debian_armhf
+FROM pihole/pihole:v4.0_armhf
 
 COPY docker_container_profile /root/.profile
 EXPOSE 53 80 443
