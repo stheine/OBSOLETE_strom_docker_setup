@@ -46,6 +46,15 @@ RUN \
     libpostproc-dev \
     libavresample-dev
 
+ARG CACHE_DATE=2018-10-06
+
+# 1.2.0
+#  wget https://github.com/gerbera/gerbera/archive/v1.2.0.zip && \
+#  unzip v1.2.0.zip && \
+#  mv gerbera-1.2.0 gerbera && \
+# latest
+#  git clone https://github.com/gerbera/gerbera.git && \
+
 RUN \
   git clone https://github.com/gerbera/gerbera.git && \
   cat gerbera/scripts/install-pupnp18.sh  | sed "s/^\.\/bootstrap.*make install\\\\$/.\/bootstrap \&\& .\/configure \$extraFlags --enable-ipv6 --enable-reuseaddr \&\& make CFLAGS='-D_LARGE_FILE_SOURCE -D_FILE_OFFSET_BITS=64' LDFLAGS='-pthread -lpthread' \&\& sudo make install\\\\/" > /tmp/install-pupnp18.sh && \
@@ -64,7 +73,7 @@ COPY docker_container_profile /root/.profile
 COPY config.xml /etc/gerbera/config.xml
 
 # EXPOSE 1030/udp 1900/udp 9000/tcp
-VOLUME /gerbera_config /mnt/nas_fritzbox /musik
+VOLUME /gerbera_config /mnt/musik
 
 ENTRYPOINT ["/usr/local/bin/gerbera", "-c", "/etc/gerbera/config.xml"]
 # CMD ["/bin/bash", "-l"]

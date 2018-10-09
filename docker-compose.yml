@@ -2,12 +2,26 @@ version: "2.2"
 # Remain on v2 for https://github.com/docker/compose/issues/4513
 
 volumes:
-  gerbera_config:
+  gerbera-kinder-filme_config:
     driver: local
     driver_opts:
       type: nfs
       o: addr=192.168.6.22,nolock,rw
-      device: :/nfs/Data/linux/gerbera
+      device: :/nfs/Data/linux/gerberaKinderFilme
+
+  gerbera-kinder-cds_config:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: addr=192.168.6.22,nolock,rw
+      device: :/nfs/Data/linux/gerberaKinderCds
+
+  gerbera-musik_config:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: addr=192.168.6.22,nolock,rw
+      device: :/nfs/Data/linux/gerberaMusik
 
   musik:
     driver: local
@@ -73,23 +87,44 @@ networks:
     driver: bridge
 
 services:
-  gerbera:
+  gerbera-kinder-filme:
     restart: unless-stopped
     build:
-      context: gerbera
+      context: gerbera-kinder-filme
       args:
         - CACHE_DATE=2018-07-16
-    # Note: 'network_mode: host' is required for readymedia to receive multicast traffic
+    # Note: 'network_mode: host' is required for the upnp server for multicast traffic
     #       to detect the upnp server.
     network_mode: host
-#    ports:
-#      - 1900:1900/udp
-#      - 8895:8895/tcp
-#      - 8200:8200/tcp
     volumes:
-      - musik:/musik:nocopy
-      - nas_fritzbox:/nas_fritzbox:nocopy
-      - gerbera_config:/gerbera_config
+      - nas_fritzbox:/mnt/nas_fritzbox:nocopy
+      - gerbera-kinder-filme_config:/gerbera_config
+
+  gerbera-kinder-cds:
+    restart: unless-stopped
+    build:
+      context: gerbera-kinder-cds
+      args:
+        - CACHE_DATE=2018-07-16
+    # Note: 'network_mode: host' is required for the upnp server for multicast traffic
+    #       to detect the upnp server.
+    network_mode: host
+    volumes:
+      - nas_fritzbox:/mnt/nas_fritzbox:nocopy
+      - gerbera-kinder-cds_config:/gerbera_config
+
+  gerbera-musik:
+    restart: unless-stopped
+    build:
+      context: gerbera-musik
+      args:
+        - CACHE_DATE=2018-07-16
+    # Note: 'network_mode: host' is required for the upnp server for multicast traffic
+    #       to detect the upnp server.
+    network_mode: host
+    volumes:
+      - musik:/mnt/musik:nocopy
+      - gerbera-musik_config:/gerbera_config
 
   pi-hole:
     restart: unless-stopped
@@ -115,25 +150,6 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - portainer:/data:nocopy
-
-#  readymedia:
-#    restart: unless-stopped
-#    build:
-#      context: readymedia
-#      args:
-#        - CACHE_DATE=2018-07-16
-#    # Note: 'network_mode: host' is required for readymedia to receive multicast traffic
-#    #       to detect the upnp server.
-#    network_mode: host
-#    ports:
-#      - 1900:1900/udp
-#      - 8895:8895/tcp
-#      - 8200:8200/tcp
-#    volumes:
-#      - musik:/musik:nocopy
-#      - nas_fritzbox:/nas_fritzbox:nocopy
-#      - readymedia_cache:/var/cache/minidlna
-#      - readymedia_log:/var/log/minidlna
 
   strom:
     restart: unless-stopped

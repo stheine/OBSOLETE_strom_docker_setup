@@ -3,14 +3,16 @@
      See http://gerbera.io or read the docs for more
      information on creating and using config.xml configration files.
     -->
+
   <server>
+    <port>49153</port>
     <ui enabled="yes" show-tooltips="yes">
       <accounts enabled="no" session-timeout="30">
         <account user="gerbera" password="gerbera"/>
       </accounts>
     </ui>
-    <name>Gerbera</name>
-    <udn>uuid:2d006d7e-53e2-499b-88dc-8c632155fd6d</udn>
+    <name>Gerbera (Kinder CDs)</name>
+    <udn>uuid:036ca2b8-19b8-4e4d-b8f7-97fa35e7ea13</udn>
     <home>/gerbera_config</home>
     <webroot>/usr/local/share/gerbera/web</webroot>
     <!--
@@ -22,7 +24,7 @@
         the value configured here. Ex: A value of 62 will result
         in an SSDP advertisement being sent every second.
     -->
-    <alive>1800</alive>
+    <alive>180</alive>
     <storage>
       <sqlite3 enabled="yes">
         <database-file>gerbera.db</database-file>
@@ -54,6 +56,7 @@
       </mark-played-items>
     </extended-runtime-options>
   </server>
+
   <import hidden-files="no">
     <scripting script-charset="UTF-8">
       <common-script>/usr/local/share/gerbera/js/common.js</common-script>
