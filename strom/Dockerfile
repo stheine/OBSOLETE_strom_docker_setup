@@ -93,6 +93,8 @@ COPY vimrc /root/.vimrc
 COPY docker_container_profile /root/.profile
 # CMD ["/bin/bash", "-l"]
 
+ENV PATH="/opt/rrdtool/bin:${PATH}"
+RUN ln -s /opt/rrdtool/bin/rrdtool /usr/local/bin/
 CMD ["/usr/local/bin/node", "/strom/strom.js"]
 
 # EXPOSE 9083

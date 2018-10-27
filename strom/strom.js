@@ -4,11 +4,8 @@ const _              = require('lodash');
 const check          = require('check-types');
 const fsExtra        = require('fs-extra');
 const moment         = require('moment');
-const {promisify}    = require('es6-promisify');
-const rrdtool        = require('rrdtools');
+const rrdtool        = require('rrdtool');
 const smartmeterObis = require('smartmeter-obis');
-
-const rrdtoolUpdate  = promisify(rrdtool.update);
 
 const options = {
   protocol:                    'SmlProtocol',
@@ -88,24 +85,19 @@ const handleData = async function(err, obisResult) {
   //  console.log(rrdUpdates);
 
     // Update values into rrd database
-    const rrdNow     = rrdtool.nows();
-    const rrdFile    = '/var/strom/strom.rrd';
-    const rrdValues  = [rrdNow];
+    const rrdDb = rrdtool.open('/var/strom/strom.rrd');
 
-    _.values(rrdUpdates).forEach(value => {
-      rrdValues.push(value);
+    console.log(`${moment().format('YYYY-MM-DD HH:mm:ss')}`, {rrdUpdates});
+
+    await new Promise((resolve, reject) => {
+      rrdDb.update(rrdUpdates, err => {
+        if(err) {
+          return reject(err);
+        }
+
+        resolve();
+      });
     });
-
-    const rrdTmpl   = _.keys(rrdUpdates).join(':');
-    const rrdUpdate = rrdValues.join(':');
-
-    console.log(`${moment().format('YYYY-MM-DD HH:mm:ss')}`, {rrdTmpl, rrdUpdate});
-
-    try {
-      await rrdtoolUpdate(rrdFile, rrdTmpl, [rrdUpdate]);
-    } catch(err) {
-      throw err;
-    }
   } catch(ex) {
     console.error('handleData(): Exception', ex);
 
